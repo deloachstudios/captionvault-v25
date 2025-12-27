@@ -1,0 +1,2214 @@
+<!doctype html>
+<html lang="en">
+ <head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CaptionVault: Amplified</title>
+  <style>
+    body {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+      background: #000000;
+      color: #ffffff;
+      min-height: 100%;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html, body {
+      height: 100%;
+    }
+
+    .app-container {
+      width: 100%;
+      height: 100%;
+      padding: 2rem 1.5rem;
+      overflow-y: auto;
+    }
+
+    .header {
+      text-align: center;
+      margin-bottom: 2.5rem;
+    }
+
+    .header h1 {
+      font-size: 2.5rem;
+      font-weight: 800;
+      margin: 0 0 0.5rem 0;
+      background: linear-gradient(135deg, #14b8a6, #a855f7);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .header p {
+      font-size: 1.1rem;
+      color: #94a3b8;
+      margin: 0;
+    }
+
+    .main-layout {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 2rem;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+
+    @media (min-width: 1024px) {
+      .main-layout {
+        grid-template-columns: 1fr 1fr;
+      }
+    }
+
+    .column {
+      background: #0f0f0f;
+      border: 2px solid #1e293b;
+      border-radius: 12px;
+      padding: 2rem;
+    }
+
+    .section {
+      margin-bottom: 2rem;
+    }
+
+    .section:last-child {
+      margin-bottom: 0;
+    }
+
+    .section-title {
+      font-size: 1.25rem;
+      font-weight: 700;
+      color: #14b8a6;
+      margin-bottom: 1rem;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .form-group {
+      margin-bottom: 1.5rem;
+    }
+
+    .form-group:last-child {
+      margin-bottom: 0;
+    }
+
+    label {
+      display: block;
+      font-weight: 600;
+      color: #e2e8f0;
+      margin-bottom: 0.5rem;
+      font-size: 0.95rem;
+    }
+
+    input[type="text"],
+    select,
+    textarea {
+      width: 100%;
+      padding: 0.75rem 1rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1rem;
+      transition: all 0.2s;
+    }
+
+    input[type="text"]:focus,
+    select:focus,
+    textarea:focus {
+      outline: none;
+      border-color: #14b8a6;
+      box-shadow: 0 0 0 3px rgba(20, 184, 166, 0.1);
+    }
+
+    textarea {
+      resize: vertical;
+      min-height: 80px;
+    }
+
+    .file-upload-container {
+      margin-top: 0.5rem;
+    }
+
+    .file-upload-label {
+      display: inline-block;
+      padding: 0.75rem 1.5rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      color: #14b8a6;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+    }
+
+    .file-upload-label:hover {
+      border-color: #14b8a6;
+      background: #2d3b4f;
+    }
+
+    input[type="file"] {
+      display: none;
+    }
+
+    .file-info {
+      margin-top: 1rem;
+      display: none;
+    }
+
+    .file-info.active {
+      display: block;
+    }
+
+    .file-preview {
+      display: flex;
+      align-items: center;
+      gap: 1rem;
+      padding: 1rem;
+      background: #1e293b;
+      border-radius: 8px;
+      border: 2px solid #334155;
+    }
+
+    .file-thumbnail {
+      width: 60px;
+      height: 60px;
+      border-radius: 6px;
+      object-fit: cover;
+      border: 2px solid #14b8a6;
+    }
+
+    .file-details {
+      flex: 1;
+    }
+
+    .file-name {
+      color: #e2e8f0;
+      font-weight: 600;
+      margin-bottom: 0.25rem;
+    }
+
+    .file-status {
+      color: #14b8a6;
+      font-size: 0.9rem;
+      font-weight: 600;
+    }
+
+    .frequency-buttons {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(120px, 1fr));
+      gap: 0.75rem;
+      margin-bottom: 1rem;
+    }
+
+    .frequency-btn {
+      padding: 0.75rem 1rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      color: #e2e8f0;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-weight: 600;
+      font-size: 0.95rem;
+    }
+
+    .frequency-btn:hover {
+      border-color: #a855f7;
+      background: #2d3b4f;
+    }
+
+    .frequency-btn.active {
+      background: linear-gradient(135deg, #14b8a6, #a855f7);
+      border-color: transparent;
+      color: #ffffff;
+    }
+
+    .frequency-description {
+      padding: 1rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 8px;
+      font-size: 0.9rem;
+      line-height: 1.6;
+      color: #94a3b8;
+    }
+
+    .generate-btn {
+      width: 100%;
+      padding: 1rem 2rem;
+      background: linear-gradient(135deg, #14b8a6, #a855f7);
+      border: none;
+      border-radius: 8px;
+      color: #ffffff;
+      font-size: 1.1rem;
+      font-weight: 700;
+      cursor: pointer;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    .generate-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 8px 20px rgba(20, 184, 166, 0.3);
+    }
+
+    .generate-btn:active {
+      transform: translateY(0);
+    }
+
+    .generate-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+      transform: none;
+    }
+
+    .output-empty {
+      text-align: center;
+      padding: 4rem 2rem;
+      color: #64748b;
+      font-size: 1.1rem;
+    }
+
+    .caption-card {
+      background: #1a1a1a;
+      border: 2px solid #2d2d2d;
+      border-radius: 8px;
+      padding: 1.5rem;
+      margin-bottom: 1.5rem;
+      position: relative;
+    }
+
+    .caption-card:last-child {
+      margin-bottom: 0;
+    }
+
+    .caption-card.saved {
+      border-color: #14b8a6;
+    }
+
+    .frequency-badge {
+      display: inline-block;
+      padding: 0.25rem 0.75rem;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 1rem;
+    }
+
+    .frequency-badge.low {
+      background: #1e40af;
+      color: #93c5fd;
+    }
+
+    .frequency-badge.mid {
+      background: #7c2d12;
+      color: #fdba74;
+    }
+
+    .frequency-badge.high {
+      background: #7e22ce;
+      color: #e9d5ff;
+    }
+
+    .caption-text {
+      color: #e2e8f0;
+      line-height: 1.7;
+      white-space: pre-wrap;
+      font-size: 1rem;
+      margin: 0;
+    }
+
+    .hashtags-wrap {
+      margin-top: 1rem;
+      color: #14b8a6;
+      font-size: 0.95rem;
+    }
+
+    .caption-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 1px solid #2d2d2d;
+    }
+
+    .caption-action-btn {
+      padding: 0.5rem 1rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 6px;
+      color: #14b8a6;
+      cursor: pointer;
+      font-size: 0.9rem;
+      font-weight: 600;
+      transition: all 0.2s;
+    }
+
+    .caption-action-btn:hover {
+      border-color: #14b8a6;
+      background: #2d3b4f;
+    }
+
+    .caption-action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .caption-action-btn.saved-btn {
+      background: #14b8a6;
+      color: #000000;
+      border-color: #14b8a6;
+    }
+
+    .caption-action-btn.saved-btn:hover {
+      background: #0d9488;
+      border-color: #0d9488;
+    }
+
+    .global-actions {
+      display: flex;
+      gap: 0.75rem;
+      margin-top: 2rem;
+      padding-top: 2rem;
+      border-top: 2px solid #2d2d2d;
+      justify-content: center;
+      flex-wrap: wrap;
+    }
+
+    .global-action-btn {
+      padding: 0.75rem 1.5rem;
+      background: #1e293b;
+      border: 2px solid #334155;
+      border-radius: 6px;
+      color: #a855f7;
+      cursor: pointer;
+      font-size: 1rem;
+      font-weight: 700;
+      transition: all 0.2s;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+    }
+
+    .global-action-btn:hover {
+      border-color: #a855f7;
+      background: #2d3b4f;
+    }
+
+    .global-action-btn:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+
+    .boost-section {
+      background: #1a1a1a;
+      border: 2px solid #2d2d2d;
+      border-radius: 8px;
+      padding: 1.5rem;
+    }
+
+    .boost-section .section-title {
+      color: #a855f7;
+      font-size: 1.1rem;
+    }
+
+    .hidden {
+      display: none;
+    }
+
+    @media (max-width: 768px) {
+      .app-container {
+        padding: 1.5rem 1rem;
+      }
+
+      .header h1 {
+        font-size: 2rem;
+      }
+
+      .header p {
+        font-size: 1rem;
+      }
+
+      .column {
+        padding: 1.5rem;
+      }
+
+      .frequency-buttons {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .global-actions {
+        flex-direction: column;
+      }
+
+      .global-action-btn {
+        width: 100%;
+      }
+    }
+  </style>
+  <style>@view-transition { navigation: auto; }</style>
+  <script src="/_sdk/data_sdk.js" type="text/javascript"></script>
+  <script src="https://cdn.tailwindcss.com" type="text/javascript"></script>
+ </head>
+ <body>
+  <div class="app-container">
+   <div class="header">
+    <h1 id="app-title">CaptionVault: Amplified</h1>
+    <p id="app-subtitle">Tune the Frequency. Set the Vibe.</p>
+   </div>
+   <div class="main-layout"><!-- LEFT COLUMN - INPUTS -->
+    <div class="column">
+     <div class="section">
+      <h2 class="section-title">Core Inputs</h2>
+      <div class="form-group"><label for="platform">Platform</label> <select id="platform"> <option value="">Select platform...</option> <option value="tiktok">TikTok</option> <option value="instagram-post">Instagram Post</option> <option value="instagram-reel">Instagram Reel</option> <option value="instagram-story">Instagram Story</option> <option value="facebook-post">Facebook Post</option> <option value="facebook-reel">Facebook Reel</option> <option value="youtube-shorts">YouTube Shorts</option> <option value="pinterest-pin">Pinterest Pin</option> <option value="etsy-listing">Etsy Listing Post</option> <option value="email-promo">Email Promo</option> <option value="blog-post">Blog Post</option> </select>
+      </div>
+      <div class="form-group"><label for="goal">Goal</label> <select id="goal"> <option value="">Select goal...</option> <option value="drive-sales">Drive sales</option> <option value="get-engagement">Get engagement</option> <option value="grow-followers">Grow followers</option> <option value="announce-drop">Announce a new drop</option> <option value="build-trust">Build trust</option> <option value="educate">Educate</option> <option value="limited-offer">Promote a limited-time offer</option> <option value="collect-emails">Collect emails</option> <option value="book-services">Book services</option> </select>
+      </div>
+      <div class="form-group"><label for="offer-type">Offer Type</label> <select id="offer-type"> <option value="">Select offer type...</option> <option value="digital-design">Digital Design File</option> <option value="physical-product">Physical Product</option> <option value="custom-merch">Custom Merch</option> <option value="service">Service</option> </select>
+      </div>
+      <div class="form-group"><label for="product-name">Product / Design Name</label> <input type="text" id="product-name" placeholder="Enter product or design name">
+      </div>
+      <div class="form-group"><label for="season">Season / Occasion</label> <select id="season"> <option value="">Select season/occasion...</option> <option value="everyday">Everyday / Custom</option> <option value="holiday">Holiday</option> <option value="graduation">Graduation</option> <option value="birthday">Birthday</option> <option value="wedding">Wedding</option> <option value="baby">Baby / Birth</option> <option value="memorial">Memorial / Celebration of Life</option> <option value="teacher">Teacher / School</option> <option value="sports">Sports / Team</option> <option value="business">Business / Branding</option> <option value="spring">Seasonal Spring</option> <option value="summer">Seasonal Summer</option> <option value="fall">Seasonal Fall</option> <option value="winter">Seasonal Winter</option> </select>
+      </div>
+      <div class="form-group" id="holiday-input-group" style="display: none;"><label for="holiday-name">Which holiday?</label> <input type="text" id="holiday-name" placeholder="Enter holiday name">
+      </div>
+      <div class="form-group"><label>Image Upload</label>
+       <div class="file-upload-container"><label for="image-upload" class="file-upload-label"> Choose Image (JPG/PNG, Max 10MB) </label> <input type="file" id="image-upload" accept=".jpg,.jpeg,.png">
+       </div>
+       <div class="file-info" id="file-info">
+        <div class="file-preview"><img id="file-thumbnail" class="file-thumbnail" alt="Preview">
+         <div class="file-details">
+          <div class="file-name" id="file-name"></div>
+          <div class="file-status">
+           Uploaded ✓
+          </div>
+         </div>
+        </div>
+       </div>
+      </div>
+     </div>
+     <div class="section boost-section">
+      <h2 class="section-title">Boost Your Captions (Optional Enhancements)</h2>
+      <div class="form-group"><label for="target-audience">Target Audience</label> <input type="text" id="target-audience" placeholder="Who are you speaking to?">
+      </div>
+      <div class="form-group"><label for="primary-outcome">Primary Outcome (positive only)</label> <input type="text" id="primary-outcome" placeholder="What positive result do you want?">
+      </div>
+      <div class="form-group"><label for="suggested-uses">Suggested Uses</label> <textarea id="suggested-uses" placeholder="How might this be used?"></textarea>
+      </div>
+     </div>
+     <div class="section">
+      <h2 class="section-title">Frequency Mode</h2>
+      <div class="frequency-buttons"><button class="frequency-btn" data-frequency="low">Low</button> <button class="frequency-btn" data-frequency="mid">Mid</button> <button class="frequency-btn" data-frequency="high">High</button> <button class="frequency-btn active" data-frequency="auto-mix">Auto-Mix</button> <button class="frequency-btn" data-frequency="wildcard">Wildcard</button>
+      </div>
+      <div class="frequency-description" id="frequency-description"><strong>Auto-Mix (Recommended):</strong> Outputs one low, one mid, one high
+      </div>
+     </div><button class="generate-btn">Generate Captions</button>
+    </div><!-- RIGHT COLUMN - OUTPUT -->
+    <div class="column">
+     <div id="error-message" style="display: none; background: #7f1d1d; border: 2px solid #dc2626; border-radius: 8px; padding: 1rem; margin-bottom: 1rem; color: #fca5a5;">
+     </div>
+     <div class="output-empty" id="empty-state-text">
+      Your captions will appear here
+     </div>
+     <div id="captions-container" style="display: none;">
+     </div>
+    </div>
+   </div>
+  </div>
+  <script>
+    const defaultConfig = {
+      app_title: "CaptionVault: Amplified",
+      app_subtitle: "Tune the Frequency. Set the Vibe.",
+      empty_state_text: "Your captions will appear here"
+    };
+
+    async function onConfigChange(config) {
+      document.getElementById('app-title').textContent = config.app_title || defaultConfig.app_title;
+      document.getElementById('app-subtitle').textContent = config.app_subtitle || defaultConfig.app_subtitle;
+      document.getElementById('empty-state-text').textContent = config.empty_state_text || defaultConfig.empty_state_text;
+    }
+
+    function mapToCapabilities(config) {
+      return {
+        recolorables: [],
+        borderables: [],
+        fontEditable: undefined,
+        fontSizeable: undefined
+      };
+    }
+
+    function mapToEditPanelValues(config) {
+      return new Map([
+        ["app_title", config.app_title || defaultConfig.app_title],
+        ["app_subtitle", config.app_subtitle || defaultConfig.app_subtitle],
+        ["empty_state_text", config.empty_state_text || defaultConfig.empty_state_text]
+      ]);
+    }
+
+    if (window.elementSdk) {
+      window.elementSdk.init({
+        defaultConfig,
+        onConfigChange,
+        mapToCapabilities,
+        mapToEditPanelValues
+      });
+    }
+
+    // Season dropdown handler
+    document.getElementById('season').addEventListener('change', function(e) {
+      const holidayGroup = document.getElementById('holiday-input-group');
+      if (e.target.value === 'holiday') {
+        holidayGroup.style.display = 'block';
+      } else {
+        holidayGroup.style.display = 'none';
+        document.getElementById('holiday-name').value = '';
+      }
+    });
+
+    // File upload handler
+    document.getElementById('image-upload').addEventListener('change', function(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const maxSize = 10 * 1024 * 1024; // 10MB
+      const allowedTypes = ['image/jpeg', 'image/png'];
+
+      if (!allowedTypes.includes(file.type)) {
+        return;
+      }
+
+      if (file.size > maxSize) {
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = function(event) {
+        document.getElementById('file-thumbnail').src = event.target.result;
+        document.getElementById('file-name').textContent = file.name;
+        document.getElementById('file-info').classList.add('active');
+      };
+      reader.readAsDataURL(file);
+    });
+
+    // Frequency mode buttons
+    const frequencyButtons = document.querySelectorAll('.frequency-btn');
+    const frequencyDescription = document.getElementById('frequency-description');
+
+    const descriptions = {
+      'low': '<strong>Low:</strong> Clean, safe, professional',
+      'mid': '<strong>Mid:</strong> Balanced, confident, creative',
+      'high': '<strong>High:</strong> Bold, energetic, attention-grabbing',
+      'auto-mix': '<strong>Auto-Mix (Recommended):</strong> Outputs one low, one mid, one high',
+      'wildcard': '<strong>Wildcard:</strong> Unpredictable mix, duplicates allowed'
+    };
+
+    let selectedFrequency = 'auto-mix'; // Track selected frequency mode
+
+    frequencyButtons.forEach(button => {
+      button.addEventListener('click', function() {
+        frequencyButtons.forEach(btn => btn.classList.remove('active'));
+        this.classList.add('active');
+        
+        selectedFrequency = this.dataset.frequency;
+        frequencyDescription.innerHTML = descriptions[selectedFrequency];
+      });
+    });
+
+    // REQUIRED STATE VARIABLES
+    let lastPromptParams = null;
+    let captions = []; // Array of caption objects: { id, text, hashtags, frequencyTag, createdAt, updatedAt, saved }
+    let previousVersions = {}; // Track previous version of each caption for remix comparison
+    let isGenerating = false;
+    let remixingIndex = null; // Track which caption is being remixed
+    let statusMsg = '';
+    let lastUsedBlueprints = [];
+
+    // FRESHNESS ENGINE - Internal session memory per caption
+    let captionMemory = {}; // { captionIndex: { microMoments: [], reactions: [], contrasts: [] } }
+
+    // NARRATIVE ANGLE BANK - Internal only, never exposed to UI
+    const NARRATIVE_ANGLES = [
+      'instant-recognition',     // "the second I saw it…"
+      'earned-confidence',       // "I don't second-guess this anymore"
+      'quiet-rejection',         // "everything else felt forced"
+      'emotional-contrast',      // "I expected X. Got Y."
+      'pattern-recognition',     // "after seeing it a few times…"
+      'calm-dismissal',          // "this isn't hype, it's clarity"
+      'personal-boundary'        // "I stopped entertaining maybes"
+    ];
+
+    // Track assigned angles per caption
+    let captionAngles = {}; // { captionIndex: 'angle-name' }
+    let usedAnglesInGeneration = []; // Track angles used in current 3-caption set
+
+    // CADENCE PROFILES - Internal only, never exposed to UI
+    const CADENCE_PROFILES = {
+      'punch-flow-button': {
+        openerLength: 'short',      // < 8 words
+        vibePattern: 'mixed-long',  // Include 1+ longer sentence (12+ words)
+        closeLength: 'short'        // < 6 words
+      },
+      'flow-punch': {
+        openerLength: 'medium',     // 8-12 words
+        vibePattern: 'mixed',       // Varied sentence lengths
+        closeLength: 'very-short'   // < 4 words
+      },
+      'build-release': {
+        openerLength: 'short',
+        vibePattern: 'gradual',     // Short → medium → long progression
+        closeLength: 'medium'       // 6-10 words
+      },
+      'minimal-confidence': {
+        openerLength: 'medium',
+        vibePattern: 'minimal',     // Fewer lines, concise
+        closeLength: 'quiet'        // Calm, measured
+      }
+    };
+
+    // Track assigned cadence profiles per caption
+    let captionCadence = {}; // { captionIndex: 'profile-name' }
+    let usedCadencesInGeneration = []; // Track cadences used in current 3-caption set
+    
+    // Common ending patterns to avoid repeating
+    const OVERUSED_ENDINGS = [
+      'period.', 'that\'s it.', 'peace.', 'end of story.', 
+      'done.', 'that\'s all.', 'anyway.', 'moving on.'
+    ];
+
+    // BANNED PHRASES (hard validation)
+    const BANNED_PHRASES = [
+      'unlock', 'level up', 'game changer', 'delve', 'elevate', 'transform',
+      'in today\'s world', 'here are 3 tips', 'let\'s dive in',
+      'content strategy', 'algorithm', 'optimize', 'niche',
+      'valuable content', 'consistency is key', 'show up'
+    ];
+
+    // HASHTAG BANKS - Organized by category for variety
+    const HASHTAG_BANKS = {
+      // Platform-specific
+      platform: {
+        'tiktok': ['#TikTokShop', '#TikTokMadeMeBuyIt', '#SmallBizTikTok', '#CreatorEconomy', '#TrendingNow'],
+        'instagram-post': ['#InstaGood', '#InstaDaily', '#IGCommunity', '#ExploreMore', '#ContentCreator'],
+        'instagram-reel': ['#ReelsInstagram', '#ReelItFeelIt', '#IGReels', '#ViralReels', '#TrendingReels'],
+        'instagram-story': ['#InstaStory', '#DailyVibes', '#StoryTime', '#BehindTheScenes', '#RealTalk'],
+        'facebook-post': ['#FacebookCommunity', '#SocialMediaMarketing', '#ShareTheLove', '#CommunityFirst'],
+        'facebook-reel': ['#FacebookReels', '#VideoContent', '#ShortFormVideo', '#ReelsOfTheDay'],
+        'youtube-shorts': ['#Shorts', '#YouTubeShorts', '#ShortVideo', '#QuickWatch', '#ShortsViral'],
+        'pinterest-pin': ['#PinterestFinds', '#PinItToWinIt', '#PinterestInspired', '#SaveForLater'],
+        'etsy-listing': ['#EtsyShop', '#EtsyFinds', '#ShopSmall', '#HandmadeWithLove', '#SupportSmallBusiness'],
+        'email-promo': ['#EmailMarketing', '#Newsletter', '#ExclusiveOffer', '#SubscriberPerks'],
+        'blog-post': ['#BlogPost', '#ContentMarketing', '#ReadTheBlog', '#NewBlogPost', '#BlogLife']
+      },
+      
+      // Goal-specific
+      goal: {
+        'drive-sales': ['#ShopNow', '#LimitedStock', '#GetYours', '#TreatYourself', '#AddToCart'],
+        'get-engagement': ['#LetMeKnow', '#CommentBelow', '#ShareYourThoughts', '#JoinTheConversation', '#WhatDoYouThink'],
+        'grow-followers': ['#FollowForMore', '#NewFollowers', '#FollowMe', '#JoinTheCommunity', '#GrowTogether'],
+        'announce-drop': ['#NewDrop', '#JustDropped', '#FreshRelease', '#NewArrivals', '#LaunchDay'],
+        'build-trust': ['#Authentic', '#RealTalk', '#Transparency', '#TrustTheProcess', '#HonestReview'],
+        'educate': ['#LearnWithMe', '#DidYouKnow', '#EduContent', '#KnowledgeSharing', '#TipOfTheDay'],
+        'limited-offer': ['#LimitedTime', '#LastChance', '#DontMissOut', '#LimitedOffer', '#ActFast'],
+        'collect-emails': ['#SignUp', '#JoinTheList', '#ExclusiveAccess', '#GetNotified', '#EmailList'],
+        'book-services': ['#BookNow', '#ScheduleToday', '#ServiceAlert', '#BookYourSpot', '#Availability']
+      },
+      
+      // Season/occasion-specific
+      season: {
+        'holiday': ['#HolidaySeason', '#FestiveVibes', '#HolidayGifts', '#SeasonalDecor', '#CelebrateInStyle'],
+        'graduation': ['#GradSeason', '#ClassOf2024', '#ProudGrad', '#GraduationGifts', '#NextChapter'],
+        'birthday': ['#BirthdayVibes', '#BirthdayCelebration', '#BirthdayGift', '#SpecialDay', '#BirthdayLove'],
+        'wedding': ['#WeddingSeason', '#BridalStyle', '#WeddingInspo', '#SayIDo', '#WeddingPlanning'],
+        'baby': ['#BabyShower', '#NewBaby', '#BabyLove', '#BabyGift', '#WelcomeBaby'],
+        'memorial': ['#InMemory', '#RememberingYou', '#CelebrationOfLife', '#ForeverInOurHearts', '#Memorial'],
+        'teacher': ['#TeacherLife', '#TeacherAppreciation', '#BackToSchool', '#TeacherGift', '#EducatorLove'],
+        'sports': ['#TeamSpirit', '#SportsLife', '#GameDay', '#TeamPride', '#AthletesLife'],
+        'business': ['#BusinessOwner', '#EntrepreneurLife', '#BrandIdentity', '#ProfessionalStyle', '#BusinessGrowth'],
+        'spring': ['#SpringVibes', '#SpringTime', '#SpringCollection', '#FreshStart', '#SpringSeason'],
+        'summer': ['#SummerVibes', '#SummerTime', '#SummerCollection', '#SunnyDays', '#SummerSeason'],
+        'fall': ['#FallVibes', '#AutumnSeason', '#FallCollection', '#CozyVibes', '#FallSeason'],
+        'winter': ['#WinterVibes', '#WinterSeason', '#WinterCollection', '#CozyWinter', '#WinterWonderland'],
+        'everyday': ['#DailyInspiration', '#EverydayStyle', '#CustomDesign', '#PersonalTouch', '#MadeForYou']
+      },
+      
+      // Offer type-specific
+      offerType: {
+        'digital-design': ['#DigitalDownload', '#InstantDownload', '#PrintableArt', '#DigitalDesign', '#DIYPrint'],
+        'physical-product': ['#HandmadeGoods', '#PhysicalProduct', '#ShipToYou', '#QualityMade', '#TangibleGoods'],
+        'custom-merch': ['#CustomMerch', '#Personalized', '#CustomDesign', '#MadeToOrder', '#YourStyle'],
+        'service': ['#ServiceBased', '#ProfessionalService', '#BookingOpen', '#ServiceProvider', '#SkillShare']
+      },
+      
+      // Frequency-aligned (tone/energy)
+      frequency: {
+        'low': ['#Minimalist', '#CleanDesign', '#SimpleLiving', '#Intentional', '#LesIsMore', '#QualityOverQuantity'],
+        'mid': ['#ModernStyle', '#BalancedLife', '#Creativity', '#Inspiration', '#EverydayMagic', '#FunctionalBeauty'],
+        'high': ['#BoldChoices', '#StandOut', '#Unapologetic', '#LevelUp', '#GameChanger', '#MakeItHappen']
+      },
+      
+      // General variety pool
+      general: [
+        '#MustHave', '#Trending', '#Viral', '#Aesthetic', '#Vibes', '#Goals',
+        '#Inspo', '#DesignLover', '#Creative', '#Unique', '#Original', '#Fresh',
+        '#Quality', '#Style', '#OnTrend', '#CuratedStyle', '#EditedLife', '#Mood',
+        '#Energy', '#Vibe', '#Moment', '#Discover', '#Explore', '#FindYourStyle'
+      ]
+    };
+
+    // Track used hashtags in current batch
+    let batchHashtagMemory = [];
+
+    // Generate anchor hashtags based on inputs
+    function generateAnchorHashtags(season, holidayName, platform, offerType, goal) {
+      const anchors = [];
+      
+      // ANCHOR 1: #CaptionVault (MANDATORY - brand attribution)
+      anchors.push('#CaptionVault');
+      
+      // ANCHOR 2: Niche/Event anchor (MANDATORY - context-based)
+      let nicheAnchor = '';
+      
+      if (season === 'holiday' && holidayName) {
+        // Holiday-specific anchor
+        nicheAnchor = '#' + holidayName.replace(/\s+/g, '').replace(/[^a-zA-Z0-9]/g, '');
+      } else if (season && season !== 'everyday') {
+        // Season/Event anchor
+        const seasonMap = {
+          'graduation': '#Graduation',
+          'birthday': '#Birthday',
+          'wedding': '#Wedding',
+          'baby': '#BabyShower',
+          'memorial': '#Memorial',
+          'teacher': '#TeacherGifts',
+          'sports': '#TeamSpirit',
+          'business': '#BusinessBranding',
+          'spring': '#SpringSeason',
+          'summer': '#SummerSeason',
+          'fall': '#FallSeason',
+          'winter': '#WinterSeason'
+        };
+        nicheAnchor = seasonMap[season] || '#ContentCreators';
+      } else {
+        // Default niche anchor based on goal/context
+        const nicheMap = {
+          'drive-sales': '#SmallBusinessTips',
+          'get-engagement': '#ContentCreators',
+          'grow-followers': '#SocialMediaMarketing',
+          'announce-drop': '#ProductLaunch',
+          'build-trust': '#BrandBuilding',
+          'educate': '#DigitalMarketing',
+          'limited-offer': '#FlashSale',
+          'collect-emails': '#EmailMarketing',
+          'book-services': '#ServiceBased'
+        };
+        nicheAnchor = nicheMap[goal] || '#ContentCreators';
+      }
+      
+      anchors.push(nicheAnchor);
+      
+      // OPTIONAL ANCHOR 3: Contextual (only when highly relevant)
+      let contextAnchor = null;
+      
+      // Add contextual anchor for specific combinations
+      if (season === 'holiday') {
+        contextAnchor = '#HolidayMarketing';
+      } else if (goal === 'drive-sales' && offerType === 'digital-design') {
+        contextAnchor = '#DigitalProducts';
+      } else if (goal === 'grow-followers') {
+        contextAnchor = '#SocialMediaGrowth';
+      }
+      
+      if (contextAnchor) {
+        anchors.push(contextAnchor);
+      }
+      
+      return anchors;
+    }
+
+    // Select varied hashtags based on frequency
+    function selectVariedHashtags(anchors, platform, goal, season, offerType, frequencyTag, captionIndex) {
+      const targetCount = 5 + Math.floor(Math.random() * 4); // 5-8 hashtags
+      const hashtagList = [...anchors]; // Start with anchors
+      const remaining = targetCount - anchors.length;
+      
+      // Build candidate pool based on inputs
+      const candidates = [];
+      
+      // Add platform-specific
+      if (HASHTAG_BANKS.platform[platform]) {
+        candidates.push(...HASHTAG_BANKS.platform[platform]);
+      }
+      
+      // Add goal-specific
+      if (HASHTAG_BANKS.goal[goal]) {
+        candidates.push(...HASHTAG_BANKS.goal[goal]);
+      }
+      
+      // Add season-specific
+      if (HASHTAG_BANKS.season[season]) {
+        candidates.push(...HASHTAG_BANKS.season[season]);
+      }
+      
+      // Add offer type-specific
+      if (HASHTAG_BANKS.offerType[offerType]) {
+        candidates.push(...HASHTAG_BANKS.offerType[offerType]);
+      }
+      
+      // Add frequency-aligned
+      const freqKey = frequencyTag.toLowerCase();
+      if (HASHTAG_BANKS.frequency[freqKey]) {
+        candidates.push(...HASHTAG_BANKS.frequency[freqKey]);
+      }
+      
+      // Add general variety
+      candidates.push(...HASHTAG_BANKS.general);
+      
+      // Remove duplicates and anchors from candidates
+      const uniqueCandidates = [...new Set(candidates)].filter(tag => !anchors.includes(tag));
+      
+      // Apply frequency-based selection strategy
+      let selectedTags = [];
+      
+      if (frequencyTag === 'LOW') {
+        // LOW: Allow moderate overlap, select from narrower pool
+        const pool = uniqueCandidates.slice(0, Math.min(15, uniqueCandidates.length));
+        selectedTags = selectRandomUnique(pool, remaining, 0.3); // 30% novelty threshold
+      } else if (frequencyTag === 'MID') {
+        // MID: Balanced variety, moderate pool
+        const pool = uniqueCandidates.slice(0, Math.min(25, uniqueCandidates.length));
+        selectedTags = selectRandomUnique(pool, remaining, 0.5); // 50% novelty threshold
+      } else if (frequencyTag === 'HIGH') {
+        // HIGH: Maximum variety, full pool
+        selectedTags = selectRandomUnique(uniqueCandidates, remaining, 0.7); // 70% novelty threshold
+      }
+      
+      // Add selected tags to batch memory
+      batchHashtagMemory.push(...selectedTags);
+      
+      // Combine anchors + selected tags
+      hashtagList.push(...selectedTags);
+      
+      return hashtagList.slice(0, targetCount); // Ensure 5-8 range
+    }
+
+    // Select random unique hashtags with novelty preference
+    function selectRandomUnique(pool, count, noveltyThreshold) {
+      const selected = [];
+      const available = [...pool];
+      
+      // Prioritize unused tags based on novelty threshold
+      const unused = available.filter(tag => {
+        const usageCount = batchHashtagMemory.filter(t => t === tag).length;
+        return usageCount === 0;
+      });
+      
+      const rarelyUsed = available.filter(tag => {
+        const usageCount = batchHashtagMemory.filter(t => t === tag).length;
+        return usageCount <= 1;
+      });
+      
+      // Build selection pool based on novelty threshold
+      let selectionPool = [];
+      const unusedWeight = Math.ceil(count * noveltyThreshold);
+      const rareWeight = count - unusedWeight;
+      
+      // Add unused tags (high priority)
+      selectionPool.push(...shuffleArray(unused).slice(0, unusedWeight));
+      
+      // Fill remaining with rarely used
+      if (selectionPool.length < count) {
+        selectionPool.push(...shuffleArray(rarelyUsed).slice(0, count - selectionPool.length));
+      }
+      
+      // If still not enough, use any available
+      if (selectionPool.length < count) {
+        const remaining = available.filter(tag => !selectionPool.includes(tag));
+        selectionPool.push(...shuffleArray(remaining).slice(0, count - selectionPool.length));
+      }
+      
+      return selectionPool.slice(0, count);
+    }
+
+    // Shuffle array helper
+    function shuffleArray(array) {
+      const shuffled = [...array];
+      for (let i = shuffled.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+      }
+      return shuffled;
+    }
+
+    // FRESHNESS BANKS - Token pools for natural variation
+    const MICRO_MOMENTS = [
+      'Mid-scroll and I paused.',
+      'Right when I opened the package.',
+      'Five minutes after I saw it.',
+      'The second I clicked through.',
+      'Just as I was about to give up.',
+      'While I was waiting in line.',
+      'During my morning coffee scroll.',
+      'Right before I closed the app.',
+      'The moment it loaded on my screen.',
+      'After seeing it three times.'
+    ];
+
+    const REACTIONS = [
+      'And honestly? I wasn\'t expecting that.',
+      'That\'s when it clicked.',
+      'I almost kept scrolling.',
+      'Suddenly it made sense.',
+      'I knew right then.',
+      'My first thought: different.',
+      'It hit me immediately.',
+      'I stopped mid-thought.',
+      'Something just felt right.',
+      'I couldn\'t unsee it.'
+    ];
+
+    const CONTRASTS = [
+      'Not like the usual stuff.',
+      'Nothing like what I tried before.',
+      'Way different from what I expected.',
+      'The opposite of what everyone else does.',
+      'Not your typical version.',
+      'Completely flips the script.',
+      'None of that same-old energy.',
+      'This isn\'t that.',
+      'Totally different vibe.',
+      'Not even close to the rest.'
+    ];
+
+    // BLUEPRINT ENGINE
+    const BLUEPRINTS = {
+      // A) Opinion / call-out - LOW FREQUENCY BASE
+      A1: {
+        hookType: 'A',
+        frequencyLevel: 'low',
+        opener: ['Not everyone needs to see this, but if you know, you know.', 'Saying it louder for the people in the back:', 'Here\'s the thing nobody talks about:'],
+        vibe: ['[product] just dropped and honestly? Different.', 'Not the usual [occasion] energy—this one hits different.', 'If you\'ve been sleeping on [product], wake up.'],
+        close: ['That\'s it. That\'s the post.', 'Don\'t say I didn\'t tell you.', 'You\'re welcome.']
+      },
+      A2: {
+        hookType: 'A',
+        frequencyLevel: 'mid',
+        opener: ['Unpopular opinion but someone has to say it:', 'I\'ll take the heat for this one:', 'Call me dramatic, but—'],
+        vibe: ['[product] for [occasion] just became non-negotiable.', 'This is the [offer] that makes everything else look mid.', 'If you\'re still doing it the old way… I can\'t help you.'],
+        close: ['Anyway.', 'Do with that what you will.', 'Moving on.']
+      },
+      A3: {
+        hookType: 'A',
+        frequencyLevel: 'high',
+        opener: ['Nobody asked, but here\'s my take:', 'Let me be CLEAR about something:', 'This is the hill I\'m dying on:'],
+        vibe: ['[product] isn\'t just for [occasion]. It\'s for anyone tired of settling.', 'The difference between good and GREAT? This.', 'You either GET IT or you don\'t. 🔥'],
+        close: ['That\'s all. 💯', 'End rant. ✨', 'Mic drop. 🎤']
+      },
+
+      // B) Relatable frustration
+      B1: {
+        hookType: 'B',
+        frequencyLevel: 'low',
+        opener: ['You know what drives me crazy?', 'Can we talk about this for a second?', 'I\'m tired of pretending this isn\'t annoying:'],
+        vibe: ['Searching forever for the right [offer] for [occasion].', 'Then [product] shows up and suddenly it clicks.', 'Five minutes in and I knew this was the one.'],
+        close: ['Finally.', 'Problem solved.', 'Back to my life now.']
+      },
+      B2: {
+        hookType: 'B',
+        frequencyLevel: 'mid',
+        opener: ['Tell me I\'m not the only one who—', 'Why does nobody talk about—', 'It took me way too long to figure out:'],
+        vibe: ['[occasion] planning used to stress me out. Then I found [product].', 'Now it\'s just… easy.', 'Not going back.'],
+        close: ['Lesson learned. ✓', 'Crisis averted.', 'Moving forward.']
+      },
+      B3: {
+        hookType: 'B',
+        frequencyLevel: 'high',
+        opener: ['Here\'s what NOBODY tells you:', 'Real talk—this used to FRUSTRATE me:', 'Can I be honest for a second? 👇'],
+        vibe: ['Finding quality [offer] for [occasion] shouldn\'t be THIS hard.', '[product] changed that. Simple as that. ✨', 'No more endless scrolling. DONE. 🙌'],
+        close: ['You GET it. 💯', 'Enough said. 🔥', 'DONE. ✓']
+      },
+
+      // C) Quiet confidence
+      C1: {
+        hookType: 'C',
+        frequencyLevel: 'low',
+        opener: ['I don\'t post often, but—', 'Rarely do I feel the need to share, but:', 'This one deserved its own moment.'],
+        vibe: ['[product] for [occasion]. That\'s it.', 'Clean. Intentional. Exactly what I needed.', 'Sometimes it really is that simple.'],
+        close: ['That\'s the vibe.', 'Nothing more to say.', 'If you know, you know.']
+      },
+      C2: {
+        hookType: 'C',
+        frequencyLevel: 'mid',
+        opener: ['I\'m not here to convince anyone.', 'No pitch. Just facts.', 'Take it or leave it:'],
+        vibe: ['[product] is the [offer] I keep coming back to for [occasion].', 'Does what it needs to do. No fluff.', 'That\'s all I need.'],
+        close: ['Simple. ✓', 'Clean.', 'Done.']
+      },
+      C3: {
+        hookType: 'C',
+        frequencyLevel: 'high',
+        opener: ['Not SHOUTING about this, just sharing:', 'Quietly adding this to the rotation: ✨', 'For what it\'s worth: 👇'],
+        vibe: ['[product] WORKS for [occasion]. Period. 💯', 'No drama. No hype. Just GOOD. 🔥', 'That\'s the energy. ✨'],
+        close: ['Carry on. 🙌', 'That\'s all. ✓', 'Peace. ✌️']
+      },
+
+      // D) Curiosity gap
+      D1: {
+        hookType: 'D',
+        frequencyLevel: 'low',
+        opener: ['So this happened—', 'Didn\'t expect this, but:', 'Mid-scroll and I paused because—'],
+        vibe: ['[product] dropped for [occasion] and I wasn\'t ready.', 'Ordered it anyway. No regrets.', 'Sometimes you just know.'],
+        close: ['That\'s the update.', 'There it is.', 'Anyway.']
+      },
+      D2: {
+        hookType: 'D',
+        frequencyLevel: 'mid',
+        opener: ['Wait—hold on.', 'Okay so plot twist:', 'Not what I planned, but—'],
+        vibe: ['[product] for [occasion] wasn\'t even on my radar.', 'Now it\'s the only thing that makes sense. ✓', 'Funny how that works.'],
+        close: ['Go figure. 🤷', 'Weird.', 'But here we are.']
+      },
+      D3: {
+        hookType: 'D',
+        frequencyLevel: 'high',
+        opener: ['Can I tell you something? 👇', 'Real quick— 🔥', 'Before I forget: ✨'],
+        vibe: ['[product] for [occasion]. That\'s what you\'re looking for. 💯', 'Trust me on this one. TRUST ME. 🙌', 'I wouldn\'t say it if it wasn\'t TRUE. ✓'],
+        close: ['You heard it here. 📣', 'Don\'t sleep on it. 😴', 'That\'s ALL I\'ll say. 🤐']
+      },
+
+      // E) Direct audience address
+      E1: {
+        hookType: 'E',
+        frequencyLevel: 'low',
+        opener: ['If you\'ve been asking—', 'For everyone who DM\'d me about this:', 'You wanted to know, so here it is:'],
+        vibe: ['[product] for [occasion]. This is the one.', 'Not gatekeeping. Sharing the win.', 'You\'re welcome in advance.'],
+        close: ['Hope that helps.', 'There you go.', 'Glad I could help.']
+      },
+      E2: {
+        hookType: 'E',
+        frequencyLevel: 'mid',
+        opener: ['Listen—', 'Pay attention for a second:', 'If you care about [occasion], read this:'],
+        vibe: ['[product] is the [offer] you didn\'t know you needed.', 'I tried it. It worked. End of story. ✓', 'That\'s the whole thing.'],
+        close: ['You decide.', 'Ball\'s in your court. 🏀', 'Up to you.']
+      },
+      E3: {
+        hookType: 'E',
+        frequencyLevel: 'high',
+        opener: ['Quick question— 👇', 'Be honest: 💯', 'Show of hands: 🙋'],
+        vibe: ['Who else is TIRED of mediocre [offer] for [occasion]? 😤', '[product] EXISTS. Use it. PERIOD. 🔥', 'That SIMPLE. ✨'],
+        close: ['Just saying. 🤷', 'Food for thought. 💭', 'Think about it. 🧠']
+      }
+    };
+
+    // Get random blueprint IDs by hook type
+    function getBlueprintsByHook(hookType) {
+      return Object.keys(BLUEPRINTS).filter(k => BLUEPRINTS[k].hookType === hookType);
+    }
+
+    // Get blueprints by frequency level
+    function getBlueprintsByFrequency(frequencyLevel) {
+      return Object.keys(BLUEPRINTS).filter(k => BLUEPRINTS[k].frequencyLevel === frequencyLevel);
+    }
+
+    // Validate caption against banned phrases
+    function validateCaption(text) {
+      const lower = text.toLowerCase();
+      for (let phrase of BANNED_PHRASES) {
+        if (lower.includes(phrase.toLowerCase())) {
+          return false;
+        }
+      }
+      return true;
+    }
+
+    // Check text similarity (basic overlap check)
+    function textSimilarity(text1, text2) {
+      const words1 = text1.toLowerCase().split(/\s+/);
+      const words2 = text2.toLowerCase().split(/\s+/);
+      const set1 = new Set(words1);
+      const set2 = new Set(words2);
+      const intersection = new Set([...set1].filter(x => set2.has(x)));
+      const union = new Set([...set1, ...set2]);
+      return intersection.size / union.size;
+    }
+
+    // FRESHNESS HELPERS - Internal only, never exposed to UI
+    function initCaptionMemory(index) {
+      if (!captionMemory[index]) {
+        captionMemory[index] = {
+          microMoments: [],
+          reactions: [],
+          contrasts: []
+        };
+      }
+    }
+
+    function selectFreshToken(bank, usedTokens, maxHistory = 5) {
+      // Filter out recently used tokens
+      const available = bank.filter(token => !usedTokens.includes(token));
+      
+      // If all exhausted, reset and reshuffle
+      if (available.length === 0) {
+        usedTokens.length = 0; // Clear history
+        return bank[Math.floor(Math.random() * bank.length)];
+      }
+      
+      // Select random from available
+      const selected = available[Math.floor(Math.random() * available.length)];
+      
+      // Track usage
+      usedTokens.push(selected);
+      if (usedTokens.length > maxHistory) {
+        usedTokens.shift();
+      }
+      
+      return selected;
+    }
+
+    // NARRATIVE ANGLE HELPERS - Internal only
+    function selectNarrativeAngle(captionIndex, isRemix = false) {
+      // For remix: avoid reusing the same angle back-to-back
+      if (isRemix && captionAngles[captionIndex]) {
+        const previousAngle = captionAngles[captionIndex];
+        const available = NARRATIVE_ANGLES.filter(a => a !== previousAngle);
+        const selected = available[Math.floor(Math.random() * available.length)];
+        captionAngles[captionIndex] = selected;
+        return selected;
+      }
+      
+      // For generate: ensure all 3 captions get DIFFERENT angles
+      const available = NARRATIVE_ANGLES.filter(a => !usedAnglesInGeneration.includes(a));
+      
+      // If all exhausted, reset
+      if (available.length === 0) {
+        usedAnglesInGeneration.length = 0;
+        const selected = NARRATIVE_ANGLES[Math.floor(Math.random() * NARRATIVE_ANGLES.length)];
+        captionAngles[captionIndex] = selected;
+        usedAnglesInGeneration.push(selected);
+        return selected;
+      }
+      
+      const selected = available[Math.floor(Math.random() * available.length)];
+      captionAngles[captionIndex] = selected;
+      usedAnglesInGeneration.push(selected);
+      return selected;
+    }
+
+    // CADENCE PROFILE HELPERS - Internal only
+    function selectCadenceProfile(captionIndex, isRemix = false) {
+      const profileNames = Object.keys(CADENCE_PROFILES);
+      
+      // For remix: avoid reusing the same cadence back-to-back
+      if (isRemix && captionCadence[captionIndex]) {
+        const previousCadence = captionCadence[captionIndex];
+        const available = profileNames.filter(p => p !== previousCadence);
+        const selected = available[Math.floor(Math.random() * available.length)];
+        captionCadence[captionIndex] = selected;
+        return selected;
+      }
+      
+      // For generate: ensure all 3 captions get DIFFERENT cadence profiles
+      const available = profileNames.filter(p => !usedCadencesInGeneration.includes(p));
+      
+      // If all exhausted, reset
+      if (available.length === 0) {
+        usedCadencesInGeneration.length = 0;
+        const selected = profileNames[Math.floor(Math.random() * profileNames.length)];
+        captionCadence[captionIndex] = selected;
+        usedCadencesInGeneration.push(selected);
+        return selected;
+      }
+      
+      const selected = available[Math.floor(Math.random() * available.length)];
+      captionCadence[captionIndex] = selected;
+      usedCadencesInGeneration.push(selected);
+      return selected;
+    }
+
+    function wordCount(text) {
+      return text.trim().split(/\s+/).length;
+    }
+
+    function adjustCadence(opener, vibeLines, close, cadenceProfile) {
+      const profile = CADENCE_PROFILES[cadenceProfile];
+      if (!profile) return { opener, vibeLines, close };
+      
+      // Adjust opener length
+      if (profile.openerLength === 'short' && wordCount(opener) > 8) {
+        // Shorten opener by taking first clause
+        const parts = opener.split(/[:,—]/);
+        opener = parts[0].trim() + (opener.includes(':') ? ':' : '.');
+      } else if (profile.openerLength === 'medium' && wordCount(opener) < 8) {
+        // Keep as is or slightly expand
+      }
+      
+      // Adjust vibe pattern
+      if (profile.vibePattern === 'minimal' && vibeLines.length > 3) {
+        vibeLines = vibeLines.slice(0, 3); // Reduce to 3 lines max
+      } else if (profile.vibePattern === 'gradual') {
+        // Sort lines by length to create progression
+        vibeLines.sort((a, b) => wordCount(a) - wordCount(b));
+      }
+      
+      // Adjust close length
+      if (profile.closeLength === 'very-short' && wordCount(close) > 4) {
+        // Shorten to single word or very short phrase
+        const shortEndings = ['Done.', 'Peace.', 'Simple.', 'Anyway.'];
+        close = shortEndings[Math.floor(Math.random() * shortEndings.length)];
+      } else if (profile.closeLength === 'short' && wordCount(close) > 6) {
+        // Trim to under 6 words
+        const words = close.split(/\s+/);
+        close = words.slice(0, 5).join(' ') + '.';
+      }
+      
+      // Check for overused endings and replace if needed
+      const closeLower = close.toLowerCase().trim();
+      if (OVERUSED_ENDINGS.includes(closeLower)) {
+        const alternatives = [
+          'There it is.', 'You get it.', 'Simple as that.', 
+          'That\'s the vibe.', 'End of thought.', 'Carry on.'
+        ];
+        const unused = alternatives.filter(alt => 
+          !OVERUSED_ENDINGS.includes(alt.toLowerCase())
+        );
+        if (unused.length > 0) {
+          close = unused[Math.floor(Math.random() * unused.length)];
+        }
+      }
+      
+      return { opener, vibeLines, close };
+    }
+
+    function applyNarrativeAngle(angle, vibeLines, productName, occasionText, offerText) {
+      // Influence sentence purpose and emotional framing based on angle
+      // This subtly adjusts phrasing while preserving structure
+      
+      const angleInfluences = {
+        'instant-recognition': {
+          prefix: 'The second I saw',
+          emotion: 'immediate clarity',
+          rhythm: 'short, decisive'
+        },
+        'earned-confidence': {
+          prefix: 'I don\'t second-guess',
+          emotion: 'calm certainty',
+          rhythm: 'measured, grounded'
+        },
+        'quiet-rejection': {
+          prefix: 'Everything else felt',
+          emotion: 'gentle dismissal',
+          rhythm: 'soft contrast'
+        },
+        'emotional-contrast': {
+          prefix: 'I expected one thing',
+          emotion: 'pleasant surprise',
+          rhythm: 'setup and pivot'
+        },
+        'pattern-recognition': {
+          prefix: 'After seeing it a few times',
+          emotion: 'gradual realization',
+          rhythm: 'patient build'
+        },
+        'calm-dismissal': {
+          prefix: 'This isn\'t hype',
+          emotion: 'quiet confidence',
+          rhythm: 'direct, clear'
+        },
+        'personal-boundary': {
+          prefix: 'I stopped entertaining',
+          emotion: 'decisive closure',
+          rhythm: 'firm, final'
+        }
+      };
+      
+      const influence = angleInfluences[angle];
+      if (!influence) return vibeLines;
+      
+      // Subtly adjust one line to reflect the narrative angle
+      // without breaking structure or voice
+      const adjustedLines = [...vibeLines];
+      const midPoint = Math.floor(adjustedLines.length / 2);
+      
+      // Inject angle-influenced phrasing naturally
+      if (angle === 'instant-recognition' && !adjustedLines[0].toLowerCase().includes('second')) {
+        // Already handled by micro-moment
+      } else if (angle === 'earned-confidence') {
+        adjustedLines[midPoint] = adjustedLines[midPoint].replace(/This is/, 'This became');
+      } else if (angle === 'quiet-rejection') {
+        // Let contrast line handle this
+      } else if (angle === 'emotional-contrast') {
+        // Natural in vibe rhythm
+      } else if (angle === 'pattern-recognition') {
+        // Already in micro-moments
+      } else if (angle === 'calm-dismissal') {
+        // Soft close handles this
+      } else if (angle === 'personal-boundary') {
+        // Handled in reaction
+      }
+      
+      return adjustedLines;
+    }
+
+    function detectFreshnessElements(caption) {
+      const lower = caption.toLowerCase();
+      
+      // Check for micro-moment (time/place/action indicators)
+      const hasMicroMoment = MICRO_MOMENTS.some(m => lower.includes(m.toLowerCase().slice(0, 15))) ||
+                             /mid-|right when|five minutes|the second|just as|while i|during|right before|the moment|after/.test(lower);
+      
+      // Check for reaction (internal thought indicators)
+      const hasReaction = REACTIONS.some(r => lower.includes(r.toLowerCase().slice(0, 10))) ||
+                          /honestly|that's when|i almost|suddenly|i knew|my first|it hit|i stopped|felt right|couldn't/.test(lower);
+      
+      // Check for contrast (differentiation indicators)
+      const hasContrast = CONTRASTS.some(c => lower.includes(c.toLowerCase().slice(0, 10))) ||
+                          /not like|nothing like|way different|opposite|not your|flips|none of that|this isn't|different vibe|not even/.test(lower);
+      
+      return {
+        hasMicroMoment,
+        hasReaction,
+        hasContrast,
+        allPresent: hasMicroMoment && hasReaction && hasContrast
+      };
+    }
+
+    function injectFreshnessElements(caption, captionIndex, productName, occasionText, offerText) {
+      initCaptionMemory(captionIndex);
+      const memory = captionMemory[captionIndex];
+      
+      const lines = caption.split('\n').filter(l => l.trim());
+      const opener = lines[0];
+      const closer = lines[lines.length - 1];
+      let vibeLines = lines.slice(1, -1);
+      
+      const freshness = detectFreshnessElements(caption);
+      
+      // Inject missing elements naturally into vibe section
+      if (!freshness.hasMicroMoment) {
+        const microMoment = selectFreshToken(MICRO_MOMENTS, memory.microMoments);
+        vibeLines.unshift(microMoment);
+      }
+      
+      if (!freshness.hasReaction) {
+        const reaction = selectFreshToken(REACTIONS, memory.reactions);
+        vibeLines.splice(Math.floor(vibeLines.length / 2), 0, reaction);
+      }
+      
+      if (!freshness.hasContrast) {
+        const contrast = selectFreshToken(CONTRASTS, memory.contrasts);
+        vibeLines.push(contrast);
+      }
+      
+      // Reassemble caption
+      return `${opener}\n\n${vibeLines.join('\n')}\n\n${closer}`;
+    }
+
+    // FREQUENCY TAG ASSIGNMENT
+    function assignFrequencyTags(mode) {
+      if (mode === 'low') {
+        return ['LOW', 'LOW', 'LOW'];
+      } else if (mode === 'mid') {
+        return ['MID', 'MID', 'MID'];
+      } else if (mode === 'high') {
+        return ['HIGH', 'HIGH', 'HIGH'];
+      } else if (mode === 'wildcard') {
+        // Random assignment for each caption
+        const options = ['LOW', 'MID', 'HIGH'];
+        return [
+          options[Math.floor(Math.random() * 3)],
+          options[Math.floor(Math.random() * 3)],
+          options[Math.floor(Math.random() * 3)]
+        ];
+      } else if (mode === 'auto-mix') {
+        // Deterministic: one LOW, one MID, one HIGH
+        return ['LOW', 'MID', 'HIGH'];
+      }
+      // Default fallback
+      return ['MID', 'MID', 'MID'];
+    }
+
+    // GENERATE SINGLE CAPTION WITH FREQUENCY AWARENESS
+    function generateSingleCaption(platform, goal, offerType, productName, season, holidayName, usedBlueprints = [], captionIndex = 0, isRemix = false, targetFrequency = 'MID') {
+      const occasionText = season === 'holiday' ? holidayName : season.replace(/-/g, ' ');
+      const offerText = offerType.replace(/-/g, ' ');
+      
+      // Initialize memory for this caption
+      initCaptionMemory(captionIndex);
+      
+      // Select narrative angle for this caption
+      const narrativeAngle = selectNarrativeAngle(captionIndex, isRemix);
+      
+      // Select cadence profile for this caption
+      const cadenceProfile = selectCadenceProfile(captionIndex, isRemix);
+      
+      let attempts = 0;
+      let caption = '';
+
+      while (attempts < 3) {
+        // Select blueprint based on target frequency
+        const frequencyLevel = targetFrequency.toLowerCase();
+        const blueprintsByFreq = getBlueprintsByFrequency(frequencyLevel);
+        
+        // Filter out recently used blueprints
+        const availableIds = blueprintsByFreq.filter(id => !usedBlueprints.includes(id) && !lastUsedBlueprints.includes(id));
+        const chosenId = availableIds.length > 0 
+          ? availableIds[Math.floor(Math.random() * availableIds.length)]
+          : blueprintsByFreq[Math.floor(Math.random() * blueprintsByFreq.length)];
+
+        const blueprint = BLUEPRINTS[chosenId];
+        const memory = captionMemory[captionIndex];
+
+        // Add randomness to prevent identical captions
+        const randomSeed = Math.random();
+        const openerIndex = Math.floor(randomSeed * blueprint.opener.length);
+        let opener = blueprint.opener[openerIndex];
+        const vibeOptions = blueprint.vibe;
+        const closeIndex = Math.floor((randomSeed + 0.33) * blueprint.close.length) % blueprint.close.length;
+        let close = blueprint.close[closeIndex];
+
+        // Build vibe section with freshness elements (2-5 lines)
+        const vibeCount = Math.max(2, Math.min(5, 2 + Math.floor(randomSeed * 3)));
+        let vibeLines = [];
+        
+        // Inject freshness elements naturally
+        const microMoment = selectFreshToken(MICRO_MOMENTS, memory.microMoments);
+        const reaction = selectFreshToken(REACTIONS, memory.reactions);
+        const contrast = selectFreshToken(CONTRASTS, memory.contrasts);
+        
+        // Build vibe with freshness woven in
+        vibeLines.push(microMoment); // Start with micro-moment
+        
+        for (let i = 0; i < vibeCount - 2; i++) {
+          let line = vibeOptions[i % vibeOptions.length];
+          line = line.replace(/\[product\]/g, productName);
+          line = line.replace(/\[occasion\]/g, occasionText);
+          line = line.replace(/\[offer\]/g, offerText);
+          vibeLines.push(line);
+        }
+        
+        vibeLines.push(reaction); // Middle: reaction
+        vibeLines.push(contrast); // End: contrast
+
+        // Apply narrative angle influence
+        vibeLines = applyNarrativeAngle(narrativeAngle, vibeLines, productName, occasionText, offerText);
+
+        // Apply cadence adjustments
+        const adjusted = adjustCadence(opener, vibeLines, close, cadenceProfile);
+        opener = adjusted.opener;
+        vibeLines = adjusted.vibeLines;
+        close = adjusted.close;
+
+        // Assemble caption
+        caption = `${opener}\n\n${vibeLines.join('\n')}\n\n${close}`;
+
+        // Validate against banned phrases
+        if (!validateCaption(caption)) {
+          attempts++;
+          continue;
+        }
+
+        // FRESHNESS CHECK: Verify all elements present
+        const freshness = detectFreshnessElements(caption);
+        if (!freshness.allPresent && attempts < 2) {
+          // Try regenerating on first 2 attempts
+          attempts++;
+          continue;
+        }
+
+        // Success
+        lastUsedBlueprints.push(chosenId);
+        if (lastUsedBlueprints.length > 10) lastUsedBlueprints.shift();
+        return { caption, hookType: blueprint.hookType, blueprintId: chosenId, success: true };
+      }
+
+      // FAILSAFE: Inject missing elements if needed
+      let fallbackCaption = `${productName} for ${occasionText}.\n\nThis ${offerText} hits different.\n\nThat's it.`;
+      
+      // Ensure freshness elements are present
+      const freshness = detectFreshnessElements(fallbackCaption);
+      if (!freshness.allPresent) {
+        fallbackCaption = injectFreshnessElements(fallbackCaption, captionIndex, productName, occasionText, offerText);
+      }
+      
+      return { caption: fallbackCaption, hookType: 'A', blueprintId: 'A1', success: false };
+    }
+
+    // Generate caption function - main caption generation logic
+    function generateCaptionText(platform, goal, offerType, productName, season, holidayName, frequencyMode) {
+      // Reset angle tracking for new generation
+      usedAnglesInGeneration = [];
+      // Reset cadence tracking for new generation
+      usedCadencesInGeneration = [];
+      // Reset batch hashtag memory for new generation
+      batchHashtagMemory = [];
+      
+      // Generate anchor hashtags for this batch
+      const anchorHashtags = generateAnchorHashtags(season, holidayName, platform, offerType, goal);
+      
+      // Assign frequency tags based on mode
+      const frequencyTags = assignFrequencyTags(frequencyMode);
+      
+      // Generate 3 captions with DIFFERENT blueprints, hook types, narrative angles, and cadence profiles
+      const generatedCaptions = [];
+      const usedBlueprints = [];
+      const usedHookTypes = [];
+
+      for (let i = 0; i < 3; i++) {
+        const targetFrequency = frequencyTags[i];
+        const result = generateSingleCaption(
+          platform, goal, offerType, productName, season, holidayName,
+          usedBlueprints,
+          i, // Pass caption index for memory tracking
+          false, // Not a remix
+          targetFrequency
+        );
+        
+        // Generate hashtags for this caption
+        const hashtags = selectVariedHashtags(
+          anchorHashtags,
+          platform,
+          goal,
+          season,
+          offerType,
+          targetFrequency,
+          i
+        );
+        
+        // Create caption object with full metadata
+        const captionObj = {
+          id: `caption-${Date.now()}-${i}`,
+          text: result.caption,
+          hashtags: hashtags.join(' '), // Store as space-separated string
+          frequencyTag: targetFrequency,
+          createdAt: Date.now(),
+          updatedAt: Date.now(),
+          saved: false
+        };
+        
+        generatedCaptions.push(captionObj);
+        usedBlueprints.push(result.blueprintId);
+        usedHookTypes.push(result.hookType);
+      }
+
+      return generatedCaptions;
+    }
+
+    // Generate caption function
+    function generateCaption() {
+      if (isGenerating || remixingIndex !== null) return;
+
+      const platform = document.getElementById('platform').value;
+      const goal = document.getElementById('goal').value;
+      const offerType = document.getElementById('offer-type').value;
+      const productName = document.getElementById('product-name').value.trim();
+      const season = document.getElementById('season').value;
+      const holidayName = document.getElementById('holiday-name').value.trim();
+      const imageFile = document.getElementById('image-upload').files[0];
+      const targetAudience = document.getElementById('target-audience').value.trim();
+      const primaryOutcome = document.getElementById('primary-outcome').value.trim();
+      const suggestedUses = document.getElementById('suggested-uses').value.trim();
+
+      // Validation
+      const errorMsg = document.getElementById('error-message');
+      if (!platform || !goal || !offerType || !productName || !season || !imageFile) {
+        errorMsg.textContent = 'Please fill in all required fields (Platform, Goal, Offer Type, Product/Design Name, Season/Occasion, and Image Upload).';
+        errorMsg.style.display = 'block';
+        errorMsg.style.background = '#7f1d1d';
+        errorMsg.style.borderColor = '#dc2626';
+        errorMsg.style.color = '#fca5a5';
+        return;
+      }
+
+      if (season === 'holiday' && !holidayName) {
+        errorMsg.textContent = 'Please specify which holiday.';
+        errorMsg.style.display = 'block';
+        errorMsg.style.background = '#7f1d1d';
+        errorMsg.style.borderColor = '#dc2626';
+        errorMsg.style.color = '#fca5a5';
+        return;
+      }
+
+      errorMsg.style.display = 'none';
+      isGenerating = true;
+      updateButtonStates();
+
+      // Save all user inputs into lastPromptParams
+      lastPromptParams = {
+        platform,
+        goal,
+        offerType,
+        productName,
+        season,
+        holidayName,
+        targetAudience,
+        primaryOutcome,
+        suggestedUses,
+        frequencyMode: selectedFrequency
+      };
+
+      // Generate 3 captions based on inputs with frequency mode
+      const generatedCaptions = generateCaptionText(platform, goal, offerType, productName, season, holidayName, selectedFrequency);
+
+      // Save state: set captions array (3 caption objects), reset previousVersions, clear statusMsg
+      captions = generatedCaptions;
+      previousVersions = {}; // Reset previous versions on new generation
+      statusMsg = '';
+      isGenerating = false;
+
+      // Display all 3 captions
+      document.getElementById('empty-state-text').style.display = 'none';
+      const container = document.getElementById('captions-container');
+      container.style.display = 'block';
+      
+      renderAllCaptions();
+
+      updateButtonStates();
+      bindCaptionActions();
+    }
+
+    // REMIX SINGLE CAPTION (ISOLATED, NO CROSS-VALIDATION)
+    function remixSingleCaption(captionIndex) {
+      const captionObj = captions[captionIndex];
+      const previousCaption = captionObj.text;
+      const currentFrequency = captionObj.frequencyTag;
+      const { platform, goal, offerType, productName, season, holidayName } = lastPromptParams;
+      const occasionText = season === 'holiday' ? holidayName : season.replace(/-/g, ' ');
+      const offerText = offerType.replace(/-/g, ' ');
+      
+      // Initialize memory for this caption
+      initCaptionMemory(captionIndex);
+      
+      // Select NEW narrative angle for remix (different from previous)
+      const narrativeAngle = selectNarrativeAngle(captionIndex, true);
+      
+      // Select NEW cadence profile for remix (different from previous)
+      const cadenceProfile = selectCadenceProfile(captionIndex, true);
+      
+      // Generate new anchor hashtags for remix
+      const anchorHashtags = generateAnchorHashtags(season, holidayName, platform, offerType, goal);
+      
+      let attempts = 0;
+      let newCaption = '';
+      let newHookType = '';
+      let blueprintId = '';
+
+      while (attempts < 3) {
+        // Select blueprint based on current frequency tag
+        const frequencyLevel = currentFrequency.toLowerCase();
+        const blueprintsByFreq = getBlueprintsByFrequency(frequencyLevel);
+        
+        // Filter out recently used blueprints
+        const availableIds = blueprintsByFreq.filter(id => !lastUsedBlueprints.includes(id));
+        blueprintId = availableIds.length > 0 
+          ? availableIds[Math.floor(Math.random() * availableIds.length)]
+          : blueprintsByFreq[Math.floor(Math.random() * blueprintsByFreq.length)];
+
+        const blueprint = BLUEPRINTS[blueprintId];
+        const memory = captionMemory[captionIndex];
+
+        // Add randomness for variety
+        const randomSeed = Math.random();
+        const openerIndex = Math.floor(randomSeed * blueprint.opener.length);
+        let opener = blueprint.opener[openerIndex];
+        const vibeOptions = blueprint.vibe;
+        const closeIndex = Math.floor((randomSeed + 0.33) * blueprint.close.length) % blueprint.close.length;
+        let close = blueprint.close[closeIndex];
+
+        // Build vibe section with freshness elements
+        const vibeCount = Math.max(2, Math.min(5, 2 + Math.floor(randomSeed * 3)));
+        let vibeLines = [];
+        
+        // Inject freshness elements naturally
+        const microMoment = selectFreshToken(MICRO_MOMENTS, memory.microMoments);
+        const reaction = selectFreshToken(REACTIONS, memory.reactions);
+        const contrast = selectFreshToken(CONTRASTS, memory.contrasts);
+        
+        // Build vibe with freshness woven in
+        vibeLines.push(microMoment); // Start with micro-moment
+        
+        for (let i = 0; i < vibeCount - 2; i++) {
+          let line = vibeOptions[i % vibeOptions.length];
+          line = line.replace(/\[product\]/g, productName);
+          line = line.replace(/\[occasion\]/g, occasionText);
+          line = line.replace(/\[offer\]/g, offerText);
+          vibeLines.push(line);
+        }
+        
+        vibeLines.push(reaction); // Middle: reaction
+        vibeLines.push(contrast); // End: contrast
+
+        // Apply narrative angle influence
+        vibeLines = applyNarrativeAngle(narrativeAngle, vibeLines, productName, occasionText, offerText);
+
+        // Apply cadence adjustments
+        const adjusted = adjustCadence(opener, vibeLines, close, cadenceProfile);
+        opener = adjusted.opener;
+        vibeLines = adjusted.vibeLines;
+        close = adjusted.close;
+
+        // Assemble caption
+        newCaption = `${opener}\n\n${vibeLines.join('\n')}\n\n${close}`;
+
+        // ANTI-CLONE: Check 80% similarity threshold with previous version
+        const similarity = textSimilarity(newCaption, previousCaption);
+        if (similarity > 0.8) {
+          attempts++;
+          continue;
+        }
+
+        // Validate against banned phrases
+        if (!validateCaption(newCaption)) {
+          attempts++;
+          continue;
+        }
+
+        // FRESHNESS CHECK: Verify all elements present
+        const freshness = detectFreshnessElements(newCaption);
+        if (!freshness.allPresent && attempts < 2) {
+          // Try regenerating on first 2 attempts
+          attempts++;
+          continue;
+        }
+
+        // Success
+        lastUsedBlueprints.push(blueprintId);
+        if (lastUsedBlueprints.length > 10) lastUsedBlueprints.shift();
+        
+        previousVersions[captionIndex] = previousCaption;
+        
+        newHookType = blueprint.hookType;
+        
+        // Generate NEW hashtags for remix (with anchor consistency)
+        const newHashtags = selectVariedHashtags(
+          anchorHashtags,
+          platform,
+          goal,
+          season,
+          offerType,
+          currentFrequency,
+          captionIndex
+        );
+        
+        // Update caption object
+        captionObj.text = newCaption;
+        captionObj.hashtags = newHashtags.join(' ');
+        captionObj.updatedAt = Date.now();
+        
+        return { success: true };
+      }
+
+      // FAILSAFE: Inject missing elements if needed
+      let fallbackCaption = `${productName} for ${occasionText}.\n\nThis ${offerText} hits different.\n\nThat's it.`;
+      
+      // Ensure freshness elements are present
+      const freshness = detectFreshnessElements(fallbackCaption);
+      if (!freshness.allPresent) {
+        fallbackCaption = injectFreshnessElements(fallbackCaption, captionIndex, productName, occasionText, offerText);
+      }
+      
+      // Generate fallback hashtags
+      const fallbackHashtags = selectVariedHashtags(
+        anchorHashtags,
+        platform,
+        goal,
+        season,
+        offerType,
+        currentFrequency,
+        captionIndex
+      );
+      
+      previousVersions[captionIndex] = previousCaption;
+      captionObj.text = fallbackCaption;
+      captionObj.hashtags = fallbackHashtags.join(' ');
+      captionObj.updatedAt = Date.now();
+      
+      return { success: false };
+    }
+
+    // REMIX FUNCTION - Remixes ONLY the clicked caption
+    function remixCaption(captionIndex) {
+      // Guard rails
+      if (!captions || captions.length === 0 || captionIndex === undefined) {
+        statusMsg = "Generate captions first.";
+        updateStatusDisplay();
+        return;
+      }
+
+      if (!lastPromptParams) {
+        statusMsg = "Generate again so I have your settings.";
+        updateStatusDisplay();
+        return;
+      }
+
+      if (isGenerating || remixingIndex !== null) {
+        return;
+      }
+
+      // Set remixing state
+      remixingIndex = captionIndex;
+      statusMsg = '';
+      updateButtonStates();
+
+      try {
+        // Remix ONLY the selected caption
+        const result = remixSingleCaption(captionIndex);
+
+        // Set success status
+        statusMsg = `Caption ${captionIndex + 1} remixed ✅`;
+
+        // Re-render all captions (but only this one changed)
+        renderAllCaptions();
+
+      } catch (error) {
+        statusMsg = "Remix failed ❌ try again.";
+      } finally {
+        remixingIndex = null;
+        updateStatusDisplay();
+        updateButtonStates();
+      }
+    }
+
+    // RENDER ALL CAPTIONS (helper function)
+    function renderAllCaptions() {
+      const container = document.getElementById('captions-container');
+      let cardsHTML = '';
+      
+      captions.forEach((captionObj, index) => {
+        const frequencyClass = captionObj.frequencyTag.toLowerCase();
+        const savedClass = captionObj.saved ? 'saved' : '';
+        const saveButtonText = captionObj.saved ? 'Saved ✓' : 'Save';
+        const saveButtonClass = captionObj.saved ? 'saved-btn' : '';
+        
+        cardsHTML += `
+          <div class="caption-card ${savedClass}" data-card-index="${index}">
+            <div class="frequency-badge ${frequencyClass}">${captionObj.frequencyTag}</div>
+            <p class="caption-text">${captionObj.text}</p>
+            ${captionObj.hashtags ? `<div class="hashtags-wrap">${captionObj.hashtags}</div>` : ''}
+            <div class="caption-actions">
+              <button class="caption-action-btn copy-btn" data-index="${index}">Copy</button>
+              <button class="caption-action-btn remix-btn" data-index="${index}">Remix</button>
+              <button class="caption-action-btn save-btn ${saveButtonClass}" data-index="${index}">${saveButtonText}</button>
+            </div>
+          </div>
+        `;
+      });
+      
+      // Add global actions
+      cardsHTML += `
+        <div class="global-actions">
+          <button class="global-action-btn copy-all-btn">Copy All</button>
+          <button class="global-action-btn remix-all-btn">Remix All</button>
+          <button class="global-action-btn save-all-btn">Save All</button>
+        </div>
+      `;
+      
+      container.innerHTML = cardsHTML;
+    }
+
+    // COPY CAPTION FUNCTION - Copies caption block (text + hashtags, NO frequency label)
+    async function copyCaption(index) {
+      if (captions.length === 0 || !captions[index]) {
+        statusMsg = "Nothing to copy yet.";
+        updateStatusDisplay();
+        return;
+      }
+
+      const captionObj = captions[index];
+      
+      // Build block: caption text + hashtags (if present)
+      let copyText = captionObj.text;
+      if (captionObj.hashtags) {
+        copyText += '\n\n' + captionObj.hashtags;
+      }
+
+      try {
+        await navigator.clipboard.writeText(copyText);
+        statusMsg = `Caption ${index + 1} copied ✅`;
+        updateStatusDisplay();
+        setTimeout(() => {
+          statusMsg = '';
+          updateStatusDisplay();
+        }, 2000);
+      } catch (err) {
+        try {
+          const ta = document.createElement('textarea');
+          ta.value = copyText;
+          ta.style.position = 'fixed';
+          ta.style.opacity = '0';
+          document.body.appendChild(ta);
+          ta.focus();
+          ta.select();
+          const ok = document.execCommand('copy');
+          document.body.removeChild(ta);
+          if (ok) {
+            statusMsg = `Caption ${index + 1} copied ✅`;
+            updateStatusDisplay();
+            setTimeout(() => {
+              statusMsg = '';
+              updateStatusDisplay();
+            }, 2000);
+          } else {
+            statusMsg = "Copy manually: " + copyText.substring(0, 50) + "...";
+            updateStatusDisplay();
+          }
+        } catch (e) {
+          statusMsg = "Copy manually: " + copyText.substring(0, 50) + "...";
+          updateStatusDisplay();
+        }
+      }
+    }
+
+    // COPY ALL FUNCTION - Copies all caption blocks separated by "\n\n---\n\n"
+    async function copyAllCaptions() {
+      if (captions.length === 0) {
+        statusMsg = "Nothing to copy yet.";
+        updateStatusDisplay();
+        return;
+      }
+
+      // Build blocks: each block = caption.text + caption.hashtags (if present)
+      // Blocks separated by "\n\n---\n\n"
+      const allCaptionsText = captions.map(captionObj => {
+        let block = captionObj.text;
+        if (captionObj.hashtags) {
+          block += '\n\n' + captionObj.hashtags;
+        }
+        return block;
+      }).join('\n\n---\n\n');
+
+      // Try modern clipboard API first
+      try {
+        await navigator.clipboard.writeText(allCaptionsText);
+        statusMsg = 'All captions copied ✅';
+        updateStatusDisplay();
+        setTimeout(() => {
+          statusMsg = '';
+          updateStatusDisplay();
+        }, 2000);
+        return;
+      } catch (err) {
+        // Fallback to execCommand method
+        try {
+          const textarea = document.createElement('textarea');
+          textarea.value = allCaptionsText;
+          textarea.style.position = 'fixed';
+          textarea.style.left = '-9999px';
+          textarea.style.opacity = '0';
+          document.body.appendChild(textarea);
+          textarea.focus();
+          textarea.select();
+          
+          const success = document.execCommand('copy');
+          document.body.removeChild(textarea);
+          
+          if (success) {
+            statusMsg = 'All captions copied ✅';
+            updateStatusDisplay();
+            setTimeout(() => {
+              statusMsg = '';
+              updateStatusDisplay();
+            }, 2000);
+          } else {
+            statusMsg = "Copy failed - try again or copy one at a time";
+            updateStatusDisplay();
+          }
+        } catch (fallbackErr) {
+          statusMsg = "Copy failed - try again or copy one at a time";
+          updateStatusDisplay();
+        }
+      }
+    }
+
+    // REMIX ALL FUNCTION
+    function remixAllCaptions() {
+      if (!captions || captions.length === 0) {
+        statusMsg = "Generate captions first.";
+        updateStatusDisplay();
+        return;
+      }
+
+      if (!lastPromptParams) {
+        statusMsg = "Generate again so I have your settings.";
+        updateStatusDisplay();
+        return;
+      }
+
+      if (isGenerating || remixingIndex !== null) {
+        return;
+      }
+
+      isGenerating = true;
+      statusMsg = 'Remixing all captions...';
+      updateStatusDisplay();
+      updateButtonStates();
+
+      try {
+        // Remix each caption independently
+        for (let i = 0; i < captions.length; i++) {
+          remixSingleCaption(i);
+        }
+
+        statusMsg = 'All captions remixed ✅';
+        renderAllCaptions();
+      } catch (error) {
+        statusMsg = "Remix failed ❌ try again.";
+      } finally {
+        isGenerating = false;
+        updateStatusDisplay();
+        updateButtonStates();
+      }
+    }
+
+    // SAVE CAPTION FUNCTION
+    function saveCaptionToggle(index) {
+      if (captions.length === 0 || !captions[index]) {
+        return;
+      }
+
+      const captionObj = captions[index];
+      captionObj.saved = !captionObj.saved;
+      captionObj.updatedAt = Date.now();
+
+      renderAllCaptions();
+      bindCaptionActions();
+
+      statusMsg = captionObj.saved ? `Caption ${index + 1} saved ✅` : `Caption ${index + 1} unsaved`;
+      updateStatusDisplay();
+      setTimeout(() => {
+        statusMsg = '';
+        updateStatusDisplay();
+      }, 2000);
+    }
+
+    // SAVE ALL FUNCTION
+    function saveAllCaptions() {
+      if (captions.length === 0) {
+        statusMsg = "Nothing to save yet.";
+        updateStatusDisplay();
+        return;
+      }
+
+      captions.forEach(captionObj => {
+        captionObj.saved = true;
+        captionObj.updatedAt = Date.now();
+      });
+
+      renderAllCaptions();
+      bindCaptionActions();
+
+      statusMsg = 'All captions saved ✅';
+      updateStatusDisplay();
+      setTimeout(() => {
+        statusMsg = '';
+        updateStatusDisplay();
+      }, 2000);
+    }
+
+    // UPDATE BUTTON STATES
+    function updateButtonStates() {
+      const generateBtn = document.querySelector('.generate-btn');
+      if (generateBtn) {
+        generateBtn.disabled = isGenerating || remixingIndex !== null;
+      }
+
+      // Disable remix buttons during any remix operation
+      const remixBtns = document.querySelectorAll('.remix-btn');
+      remixBtns.forEach(btn => {
+        btn.disabled = isGenerating || remixingIndex !== null;
+      });
+
+      // Disable copy buttons during generation
+      const copyBtns = document.querySelectorAll('.copy-btn');
+      copyBtns.forEach(btn => {
+        btn.disabled = isGenerating;
+      });
+
+      // Disable save buttons during generation
+      const saveBtns = document.querySelectorAll('.save-btn');
+      saveBtns.forEach(btn => {
+        btn.disabled = isGenerating;
+      });
+
+      // Disable global buttons during operations
+      const globalBtns = document.querySelectorAll('.global-action-btn');
+      globalBtns.forEach(btn => {
+        btn.disabled = isGenerating || remixingIndex !== null;
+      });
+    }
+
+    // UPDATE STATUS DISPLAY
+    function updateStatusDisplay() {
+      const errorMsg = document.getElementById('error-message');
+      if (statusMsg) {
+        errorMsg.textContent = statusMsg;
+        errorMsg.style.display = 'block';
+        errorMsg.style.background = statusMsg.includes('✅') ? '#065f46' : '#7f1d1d';
+        errorMsg.style.borderColor = statusMsg.includes('✅') ? '#10b981' : '#dc2626';
+        errorMsg.style.color = statusMsg.includes('✅') ? '#d1fae5' : '#fca5a5';
+      } else {
+        errorMsg.style.display = 'none';
+      }
+    }
+
+    // EVENT DELEGATION FOR ALL CAPTION ACTIONS
+    function bindCaptionActions() {
+      const c = document.getElementById('captions-container');
+      if (!c || c.dataset.bound) return;
+      c.dataset.bound = "1";
+
+      c.addEventListener('click', async (e) => {
+        const remixBtn = e.target.closest('.remix-btn');
+        const copyBtn = e.target.closest('.copy-btn');
+        const saveBtn = e.target.closest('.save-btn');
+        const copyAllBtn = e.target.closest('.copy-all-btn');
+        const remixAllBtn = e.target.closest('.remix-all-btn');
+        const saveAllBtn = e.target.closest('.save-all-btn');
+
+        if (remixBtn) {
+          const index = parseInt(remixBtn.dataset.index);
+          remixCaption(index);
+          return;
+        }
+
+        if (copyBtn) {
+          const index = parseInt(copyBtn.dataset.index);
+          await copyCaption(index);
+          return;
+        }
+
+        if (saveBtn) {
+          const index = parseInt(saveBtn.dataset.index);
+          saveCaptionToggle(index);
+          return;
+        }
+
+        if (copyAllBtn) {
+          await copyAllCaptions();
+          return;
+        }
+
+        if (remixAllBtn) {
+          remixAllCaptions();
+          return;
+        }
+
+        if (saveAllBtn) {
+          saveAllCaptions();
+          return;
+        }
+      });
+    }
+
+    // Bind on load
+    bindCaptionActions();
+
+    // Generate button click handler
+    document.querySelector('.generate-btn').addEventListener('click', generateCaption);
+  </script>
+ <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b47666b33101b61',t:'MTc2NjgyMzY0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
+</html>
