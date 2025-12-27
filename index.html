@@ -2281,6 +2281,108 @@
 
     // Generate button click handler
     document.querySelector('.generate-btn').addEventListener('click', generateCaption);
-  </script>
+ // ===== ACCESS GATE (Google Sheets via Apps Script) =====
+const ACCESS_GATE = {
+  // 🔥 PASTE YOUR APPS SCRIPT WEB APP URL HERE:
+  endpoint: "PASTE_YOUR_WEB_APP_URL_HERE",
+  // If true, user stays unlocked for 12 hours on that device
+  rememberHours: 12
+};
+
+function showLockError(msg) {
+  const el = document.getElementById("lock-error");
+  el.textContent = msg;
+  el.style.display = "block";
+}
+
+function hideLockScreen() {
+  const lock = document.getElementById("lock-screen");
+  if (lock) lock.style.display = "none";
+}
+
+function isRememberedUnlocked() {
+  try {
+    const raw = localStorage.getItem("cv_unlocked_until");
+    if (!raw) return false;
+    const ts = Number(raw);
+    return Number.isFinite(ts) && Date.now() < ts;
+  } catch {
+    return false;
+  }
+}
+
+function rememberUnlocked(hours) {
+  try {
+    const until = Date.now() + hours * 60 * 60 * 1000;
+    localStorage.setItem("cv_unlocked_until", String(until));
+  } catch {}
+}
+
+async function verifyAccessCode(code) {
+  const res = await fetch(ACCESS_GATE.endpoint, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ code })
+  });
+  const data = await res.json();
+  return data;
+}
+
+function bindAccessGate() {
+  const input = document.getElementById("access-code-input");
+  const btn = document.getElementById("unlock-btn");
+
+  // Auto-unlock if remembered
+  if (isRememberedUnlocked()) {
+    hideLockScreen();
+    return;
+  }
+
+  async function attemptUnlock() {
+    const code = (input.value || "").trim().toUpperCase();
+    document.getElementById("lock-error").style.display = "none";
+    btn.disabled = true;
+    btn.textContent = "Checking...";
+
+    try {
+      const result = await verifyAccessCode(code);
+
+      if (result.ok) {
+        // success
+        rememberUnlocked(ACCESS_GATE.rememberHours);
+        hideLockScreen();
+        return;
+      }
+
+      // Friendly error mapping
+      const map = {
+        MISSING_CODE: "Enter a code first.",
+        INVALID_CODE: "That code is not valid.",
+        DISABLED: "That code has been disabled.",
+        EXPIRED: "That code has expired.",
+        NO_USES_LEFT: "That code has already been used up.",
+        BAD_HEADERS: "Code system error: sheet headers are wrong.",
+        SHEET_NOT_FOUND: "Code system error: sheet tab not found.",
+        BAD_USES: "Code system error: uses_left must be a number."
+      };
+
+      showLockError(map[result.error] || "Code failed. Check it and try again.");
+    } catch (e) {
+      showLockError("Network error. Try again in a moment.");
+    } finally {
+      btn.disabled = false;
+      btn.textContent = "Unlock";
+    }
+  }
+
+  btn.addEventListener("click", attemptUnlock);
+  input.addEventListener("keydown", (e) => {
+    if (e.key === "Enter") attemptUnlock();
+  });
+}
+
+// Call it on load
+bindAccessGate();
+ </script>
  <script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'9b47666b33101b61',t:'MTc2NjgyMzY0MC4wMDAwMDA='};var a=document.createElement('script');a.nonce='';a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script></body>
 </html>
